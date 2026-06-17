@@ -8,6 +8,30 @@ under `heppyyier_utils.jewel`, Pythia8 helpers live under
 `heppyyier_utils.pythia`, and all JEWEL command-line entry points use a
 `jewel_` prefix so future utilities for other generators can coexist cleanly.
 
+## Artifact Caching
+
+`heppyyier_utils.cache` provides generator-neutral helpers for local analysis
+caches: JSON-safe config normalization, deterministic config hashes, compact
+filename tokens, pickle payload read/write, and JSON sidecars.
+
+```python
+from heppyyier_utils.cache import ArtifactCache
+
+cache = ArtifactCache("outputs/cache", schema_version=1, base_dir=".")
+config = {"generator": "pythia8", "n_events": 10000, "jet_R": 0.4}
+path = cache.path("splitting_records", "pythia_demo", config)
+
+payload = {"config": config, "records": records}
+cache.write_pickle(path, payload, sidecar_exclude={"records"})
+loaded = cache.read_pickle(path)
+```
+
+Pickle payloads are meant for local reuse, not long-term interchange. If a
+payload contains project-specific Python objects, the same classes must be
+importable with compatible layouts when the cache is read. For portable or
+archival products, write stable formats such as parquet/Arrow plus JSON
+metadata and use this module only for the naming/metadata conventions.
+
 ## Pythia8
 
 `heppyyier_utils.pythia` provides a small library-first layer for building and
@@ -72,6 +96,43 @@ pythia = create_pythia(config, load=True)
 ```
 
 A local FastJet example is provided at `examples/demo_pythia_fastjet.py`.
+
+### Pythia Flavor Tagging
+
+`heppyyier_utils.pythia.flavor` provides reusable truth-flavor helpers for
+Pythia/FastJet workflows. The helpers are importable without Pythia8 or FastJet
+loaded; runtime objects are passed in by the caller.
+
+Hard-parton matching works at hadron and parton level:
+
+```python
+from heppyyier_utils.pythia.flavor import extract_hard_partons, tag_jet_by_hard_parton
+
+partons = extract_hard_partons(pythia.event)
+tag = tag_jet_by_hard_parton(jet, partons, match_radius=0.3)
+```
+
+By default, `b` means `|pdg| == 5`, `light` means `|pdg| in {1, 2, 3}`,
+and charm/gluon jets are kept separate from the light-quark category. The
+matching radius is always caller-configurable through `match_radius`.
+
+Heavy-hadron ghost tagging is also available for hadron-level events:
+
+```python
+from heppyyier_utils.pythia.flavor import (
+    append_ghosts,
+    make_heavy_hadron_ghosts,
+    tag_jet_by_heavy_hadron_ghosts,
+)
+
+ghosts, labels = make_heavy_hadron_ghosts(pythia.event, fastjet)
+append_ghosts(particles, ghosts)
+# Cluster particles with FastJet, then:
+tag = tag_jet_by_heavy_hadron_ghosts(jet, labels)
+```
+
+Ghost tagging requires hadronization. For parton-level generation, use
+hard-parton matching instead.
 
 ## JEWEL
 
