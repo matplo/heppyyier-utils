@@ -4,8 +4,74 @@ Workflow utilities for HEP event generators and tools installed with
 [heppyyier](https://github.com/matplo/heppyyier).
 
 The repository is organized by generator/tool namespace. JEWEL utilities live
-under `heppyyier_utils.jewel`, and all JEWEL command-line entry points use a
+under `heppyyier_utils.jewel`, Pythia8 helpers live under
+`heppyyier_utils.pythia`, and all JEWEL command-line entry points use a
 `jewel_` prefix so future utilities for other generators can coexist cleanly.
+
+## Pythia8
+
+`heppyyier_utils.pythia` provides a small library-first layer for building and
+applying common Pythia8 settings. It does not import Pythia8, cppyy, or
+heppyyier at package import time, so the utility package remains installable
+without the generator stack loaded.
+
+Install/load Pythia8 separately when you want to run generation:
+
+```bash
+heppyyier install pythia8 fastjet heppyyier-utils
+module load pythia8 fastjet heppyyier-utils
+```
+
+Create a standard pp hard-QCD setup with a dataclass:
+
+```python
+from heppyyier_utils.pythia import PythiaConfig, create_pythia
+
+config = PythiaConfig.pp_hard_qcd(ecm=13000.0, pthat_min=20.0)
+pythia = create_pythia(config)
+```
+
+The same helper accepts dictionaries:
+
+```python
+from heppyyier_utils.pythia import create_pythia
+
+pythia = create_pythia({
+    "ecm": 13000.0,
+    "process": "hard_qcd",
+    "pthat_min": 20.0,
+    "seed": 12345,
+})
+```
+
+It can also consume `argparse.Namespace` objects. The added options use the
+historical `--py-*` flag style, while the generated namespace is normalized by
+the utility:
+
+```python
+import argparse
+
+from heppyyier_utils.pythia import add_pythia_args, create_pythia
+
+parser = argparse.ArgumentParser()
+add_pythia_args(parser)
+args = parser.parse_args()
+
+pythia = create_pythia(args)
+```
+
+Raw Pythia command strings remain supported through `extra_settings` or the
+legacy `--pythiaopts` option. Extra settings are applied last so they can
+override generated defaults.
+
+If Pythia8 is not already importable through a shell module, pass `load=True`
+to call `heppyyier.load("pythia8")` before creating the generator:
+
+```python
+pythia = create_pythia(config, load=True)
+```
+
+A local FastJet example is provided at `examples/demo_pythia_fastjet.py`.
 
 ## JEWEL
 
