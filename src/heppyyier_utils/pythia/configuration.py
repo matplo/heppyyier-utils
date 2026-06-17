@@ -32,6 +32,36 @@ _PROCESS_SETTINGS = {
     "hard_qcd": ("HardQCD:all = on",),
     "hard_qcd_charm": ("HardQCD:hardccbar = on",),
     "hard_qcd_beauty": ("HardQCD:hardbbbar = on",),
+    "hard_qcd_lf": (
+        "HardQCD:all = off",
+        "HardQCD:gg2gg = on",
+        "HardQCD:qg2qg = on",
+        "HardQCD:qqbar2gg = on",
+        "HardQCD:gg2qqbar = on",
+        "HardQCD:qq2qq = on",
+        "HardQCD:qqbar2qqbarNew = on",
+        "HardQCD:hardccbar = off",
+        "HardQCD:hardbbbar = off",
+    ),
+    "hard_qcd_gluons": (
+        "HardQCD:all = off",
+        "HardQCD:gg2gg = on",
+        "HardQCD:qqbar2gg = on",
+    ),
+    "hard_qcd_quarks": (
+        "HardQCD:all = off",
+        "HardQCD:gg2qqbar = on",
+        "HardQCD:qq2qq = on",
+        "HardQCD:qqbar2qqbarNew = on",
+        "HardQCD:hardccbar = on",
+        "HardQCD:hardbbbar = on",
+    ),
+    "hard_qcd_uds": (
+        "HardQCD:all = off",
+        "HardQCD:gg2qqbar = on",
+        "HardQCD:qq2qq = on",
+        "HardQCD:qqbar2qqbarNew = on",
+    ),
     "prompt_photon": ("PromptPhoton:all = on",),
     "soft_qcd": ("SoftQCD:all = on",),
     "minbias": ("SoftQCD:all = on",),
@@ -75,6 +105,26 @@ _PROCESS_ALIASES = {
     "hard-qcd-beauty": "hard_qcd_beauty",
     "hard_qcd_beauty": "hard_qcd_beauty",
     "beauty": "hard_qcd_beauty",
+    "bottom": "hard_qcd_beauty",
+    "hardqcdlf": "hard_qcd_lf",
+    "hard-qcd-lf": "hard_qcd_lf",
+    "hard_qcd_lf": "hard_qcd_lf",
+    "lf": "hard_qcd_lf",
+    "light": "hard_qcd_lf",
+    "hardqcdgluons": "hard_qcd_gluons",
+    "hard-qcd-gluons": "hard_qcd_gluons",
+    "hard_qcd_gluons": "hard_qcd_gluons",
+    "gluons": "hard_qcd_gluons",
+    "gluon": "hard_qcd_gluons",
+    "hardqcdquarks": "hard_qcd_quarks",
+    "hard-qcd-quarks": "hard_qcd_quarks",
+    "hard_qcd_quarks": "hard_qcd_quarks",
+    "quarks": "hard_qcd_quarks",
+    "quark": "hard_qcd_quarks",
+    "hardqcduds": "hard_qcd_uds",
+    "hard-qcd-uds": "hard_qcd_uds",
+    "hard_qcd_uds": "hard_qcd_uds",
+    "uds": "hard_qcd_uds",
     "promptphoton": "prompt_photon",
     "prompt-photon": "prompt_photon",
     "prompt_photon": "prompt_photon",
@@ -133,6 +183,120 @@ class PythiaConfig:
         return cls(
             ecm=ecm,
             process="hard_qcd",
+            pthat_min=pthat_min,
+            pthat_max=pthat_max,
+            **kwargs,
+        )
+
+    @classmethod
+    def pp_hard_qcd_charm(
+        cls,
+        *,
+        ecm: float = 13000.0,
+        pthat_min: float | None = None,
+        pthat_max: float | None = None,
+        **kwargs: Any,
+    ) -> "PythiaConfig":
+        """Create a pp hard-QCD charm configuration."""
+
+        return cls(
+            ecm=ecm,
+            process="hard_qcd_charm",
+            pthat_min=pthat_min,
+            pthat_max=pthat_max,
+            **kwargs,
+        )
+
+    @classmethod
+    def pp_hard_qcd_beauty(
+        cls,
+        *,
+        ecm: float = 13000.0,
+        pthat_min: float | None = None,
+        pthat_max: float | None = None,
+        **kwargs: Any,
+    ) -> "PythiaConfig":
+        """Create a pp hard-QCD beauty configuration."""
+
+        return cls(
+            ecm=ecm,
+            process="hard_qcd_beauty",
+            pthat_min=pthat_min,
+            pthat_max=pthat_max,
+            **kwargs,
+        )
+
+    @classmethod
+    def pp_hard_qcd_lf(
+        cls,
+        *,
+        ecm: float = 13000.0,
+        pthat_min: float | None = None,
+        pthat_max: float | None = None,
+        **kwargs: Any,
+    ) -> "PythiaConfig":
+        """Create a pp hard-QCD light-flavor plus gluon configuration."""
+
+        return cls(
+            ecm=ecm,
+            process="hard_qcd_lf",
+            pthat_min=pthat_min,
+            pthat_max=pthat_max,
+            **kwargs,
+        )
+
+    @classmethod
+    def pp_hard_qcd_gluons(
+        cls,
+        *,
+        ecm: float = 13000.0,
+        pthat_min: float | None = None,
+        pthat_max: float | None = None,
+        **kwargs: Any,
+    ) -> "PythiaConfig":
+        """Create a pp hard-QCD gluon-channel configuration."""
+
+        return cls(
+            ecm=ecm,
+            process="hard_qcd_gluons",
+            pthat_min=pthat_min,
+            pthat_max=pthat_max,
+            **kwargs,
+        )
+
+    @classmethod
+    def pp_hard_qcd_quarks(
+        cls,
+        *,
+        ecm: float = 13000.0,
+        pthat_min: float | None = None,
+        pthat_max: float | None = None,
+        **kwargs: Any,
+    ) -> "PythiaConfig":
+        """Create a pp hard-QCD quark-channel configuration including c/b."""
+
+        return cls(
+            ecm=ecm,
+            process="hard_qcd_quarks",
+            pthat_min=pthat_min,
+            pthat_max=pthat_max,
+            **kwargs,
+        )
+
+    @classmethod
+    def pp_hard_qcd_uds(
+        cls,
+        *,
+        ecm: float = 13000.0,
+        pthat_min: float | None = None,
+        pthat_max: float | None = None,
+        **kwargs: Any,
+    ) -> "PythiaConfig":
+        """Create a pp hard-QCD uds-channel configuration."""
+
+        return cls(
+            ecm=ecm,
+            process="hard_qcd_uds",
             pthat_min=pthat_min,
             pthat_max=pthat_max,
             **kwargs,
@@ -349,7 +513,11 @@ def add_pythia_args(parser: argparse.ArgumentParser, prefix: str = "py") -> argp
         f"--{flag_prefix}process",
         dest="process",
         default="hard_qcd",
-        help="Process preset: hard_qcd, minbias, inelastic, non_diffractive, prompt_photon, or none.",
+        help=(
+            "Process preset: hard_qcd, hard_qcd_charm, hard_qcd_beauty, hard_qcd_lf, "
+            "hard_qcd_gluons, hard_qcd_quarks, hard_qcd_uds, minbias, inelastic, "
+            "non_diffractive, prompt_photon, or none."
+        ),
     )
     parser.add_argument(
         f"--{flag_prefix}hardQCD",
@@ -358,6 +526,54 @@ def add_pythia_args(parser: argparse.ArgumentParser, prefix: str = "py") -> argp
         default=False,
         action="store_true",
         help="Enable HardQCD:all.",
+    )
+    parser.add_argument(
+        f"--{flag_prefix}hardQCDcharm",
+        f"--{flag_prefix}hard-qcd-charm",
+        dest="hard_qcd_charm",
+        default=False,
+        action="store_true",
+        help="Enable HardQCD:hardccbar.",
+    )
+    parser.add_argument(
+        f"--{flag_prefix}hardQCDbeauty",
+        f"--{flag_prefix}hard-qcd-beauty",
+        dest="hard_qcd_beauty",
+        default=False,
+        action="store_true",
+        help="Enable HardQCD:hardbbbar.",
+    )
+    parser.add_argument(
+        f"--{flag_prefix}hardQCDlf",
+        f"--{flag_prefix}hard-qcd-lf",
+        dest="hard_qcd_lf",
+        default=False,
+        action="store_true",
+        help="Enable hard-QCD light flavor plus gluon channels.",
+    )
+    parser.add_argument(
+        f"--{flag_prefix}hardQCDgluons",
+        f"--{flag_prefix}hard-qcd-gluons",
+        dest="hard_qcd_gluons",
+        default=False,
+        action="store_true",
+        help="Enable hard-QCD gluon outgoing channels.",
+    )
+    parser.add_argument(
+        f"--{flag_prefix}hardQCDquarks",
+        f"--{flag_prefix}hard-qcd-quarks",
+        dest="hard_qcd_quarks",
+        default=False,
+        action="store_true",
+        help="Enable hard-QCD quark outgoing channels, including c/b.",
+    )
+    parser.add_argument(
+        f"--{flag_prefix}hardQCDuds",
+        f"--{flag_prefix}hard-qcd-uds",
+        dest="hard_qcd_uds",
+        default=False,
+        action="store_true",
+        help="Enable hard-QCD uds outgoing channels.",
     )
     parser.add_argument(
         f"--{flag_prefix}minbias",
@@ -511,6 +727,10 @@ def _legacy_processes(data: Mapping[str, Any]) -> tuple[str, ...]:
         ("hard_qcd", ("hard_qcd", "py_hardQCD", "py_hard_qcd")),
         ("hard_qcd_charm", ("hard_qcd_charm", "py_hardQCDcharm", "py_hard_qcd_charm")),
         ("hard_qcd_beauty", ("hard_qcd_beauty", "py_hardQCDbeauty", "py_hard_qcd_beauty")),
+        ("hard_qcd_lf", ("hard_qcd_lf", "py_hardQCDlf", "py_hard_qcd_lf")),
+        ("hard_qcd_gluons", ("hard_qcd_gluons", "py_hardQCDgluons", "py_hard_qcd_gluons")),
+        ("hard_qcd_quarks", ("hard_qcd_quarks", "py_hardQCDquarks", "py_hard_qcd_quarks")),
+        ("hard_qcd_uds", ("hard_qcd_uds", "py_hardQCDuds", "py_hard_qcd_uds")),
         ("prompt_photon", ("prompt_photon", "py_promptPhoton", "py_prompt_photon")),
         ("minbias", ("minbias", "py_minbias")),
         ("inelastic", ("inelastic", "py_inel")),

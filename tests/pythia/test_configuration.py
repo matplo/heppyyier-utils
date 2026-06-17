@@ -43,6 +43,28 @@ def test_build_settings_from_dataclass_pp_hard_qcd():
     assert "Print:quiet = on" in settings
 
 
+def test_build_settings_supports_beauty_and_uds_presets():
+    beauty_settings = build_settings(PythiaConfig.pp_hard_qcd_beauty(ecm=13000.0, pthat_min=20.0))
+    uds_settings = build_settings(PythiaConfig.pp_hard_qcd_uds(ecm=13000.0, pthat_min=20.0))
+
+    assert "HardQCD:hardbbbar = on" in beauty_settings
+    assert "HardQCD:all = off" in uds_settings
+    assert "HardQCD:gg2qqbar = on" in uds_settings
+    assert "HardQCD:qq2qq = on" in uds_settings
+    assert "HardQCD:qqbar2qqbarNew = on" in uds_settings
+    assert "HardQCD:hardbbbar = on" not in uds_settings
+
+
+def test_build_settings_supports_light_flavor_aliases():
+    uds_settings = build_settings({"process": "uds"})
+    light_settings = build_settings({"process": "light"})
+
+    assert "HardQCD:gg2qqbar = on" in uds_settings
+    assert "HardQCD:hardbbbar = on" not in uds_settings
+    assert "HardQCD:qg2qg = on" in light_settings
+    assert "HardQCD:hardbbbar = off" in light_settings
+
+
 def test_build_settings_from_mapping_supports_raw_options_and_toggles():
     settings = build_settings(
         {
@@ -88,6 +110,17 @@ def test_build_settings_from_legacy_argparse_namespace():
     assert "PartonLevel:ISR = off" in settings
     assert "HadronLevel:all = off" in settings
     assert settings[-2:] == ["Tune:pp = 14", "MultipartonInteractions:pT0Ref = 2.28"]
+
+
+def test_build_settings_from_legacy_uds_flag():
+    args = argparse.Namespace(py_hardQCDuds=True, process="hard_qcd")
+
+    config = PythiaConfig.from_namespace(args)
+    settings = build_settings(config)
+
+    assert config.process == ("hard_qcd_uds",)
+    assert "HardQCD:all = off" in settings
+    assert "HardQCD:gg2qqbar = on" in settings
 
 
 def test_configure_pythia_applies_files_before_strings():
@@ -139,6 +172,18 @@ def test_add_pythia_args_can_feed_create_config():
     assert "Beams:eCM = 13000" in settings
     assert "PhaseSpace:pTHatMin = 20" in settings
     assert "PartonLevel:MPI = off" in settings
+
+
+def test_add_pythia_args_supports_light_flavor_switches():
+    parser = argparse.ArgumentParser()
+    add_pythia_args(parser)
+
+    args = parser.parse_args(["--py-ecm", "13000", "--py-hardQCDuds"])
+    settings = build_settings(args)
+
+    assert "HardQCD:all = off" in settings
+    assert "HardQCD:gg2qqbar = on" in settings
+    assert "Beams:eCM = 13000" in settings
 
 
 def test_unknown_process_is_rejected():

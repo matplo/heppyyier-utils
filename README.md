@@ -68,6 +68,20 @@ pythia = create_pythia({
 })
 ```
 
+Useful hard-QCD process presets include:
+
+- `hard_qcd`: inclusive `HardQCD:all`
+- `hard_qcd_beauty`: `HardQCD:hardbbbar`
+- `hard_qcd_charm`: `HardQCD:hardccbar`
+- `hard_qcd_uds`: uds outgoing channels
+- `hard_qcd_lf`: uds plus gluon channels, with hard c/b disabled
+- `hard_qcd_gluons`: gluon outgoing channels
+- `hard_qcd_quarks`: quark outgoing channels, including c/b
+
+The same choices are available through aliases such as `beauty`, `uds`,
+`light`, and `gluons`, or through compatibility flags such as
+`--py-hardQCDbeauty`, `--py-hardQCDuds`, and `--py-hardQCDlf`.
+
 It can also consume `argparse.Namespace` objects. The added options use the
 historical `--py-*` flag style, while the generated namespace is normalized by
 the utility:
