@@ -1,0 +1,25 @@
+# This the parameter file to test setting for the Lund trajectory
+# c.m.s. energy
+SQRTS 5020.
+# number of events
+NEVENT 2000
+# LHAPDF set for PbPb: EPPS16nlo_CT14nlo_Pb208
+PDFSET 901300
+# Add a file for the medium settings
+MEDIUMPARAMS medium.params.dat
+# Let's change the generation phase space:
+PTMIN 100.
+PTMAX -1.
+#ETAMAX 2.5
+# Turn off event weighting
+WEIGHTED F
+# this is to include recoil effects
+KEEPRECOILS T
+# to write the output necessary for subtraction of the thermal momentum components
+WRITESCATCEN T
+# to write out dummy particles (needed for 4MomSub subtraction)
+WRITEDUMMIES T
+# keep intermediate particles
+#SHORTHEPMC F
+#COMPRESS F
+#HADRO F

@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "heppyyier-utils"
+version = "0.1.0"
+description = "Workflow utilities for heppyyier-installed HEP event generators and tools."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "awkward",
+  "click>=8.1",
+  "numpy",
+  "pyhepmc",
+  "pyyaml",
+  "tqdm",
+  "uproot",
+]
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+[project.scripts]
+jewel_prepare = "heppyyier_utils.jewel.cli:prepare_main"
+jewel_run = "heppyyier_utils.jewel.cli:run_main"
+jewel_convert = "heppyyier_utils.jewel.cli:convert_main"
+jewel_pipeline = "heppyyier_utils.jewel.cli:pipeline_main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"heppyyier_utils.jewel" = ["templates/*.dat"]
