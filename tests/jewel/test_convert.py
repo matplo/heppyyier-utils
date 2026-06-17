@@ -4,7 +4,7 @@ import pytest
 from heppyyier_utils.jewel.convert import RootBuffers, _write_root, const_subtraction_event
 
 
-def test_write_root_creates_cab_compatible_tracks_tree(tmp_path):
+def test_write_root_creates_tracks_tree(tmp_path):
     uproot = pytest.importorskip("uproot")
     buffers = RootBuffers()
     buffers.event_id.extend([0, 0])

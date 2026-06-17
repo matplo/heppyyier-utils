@@ -13,24 +13,8 @@ under `heppyyier_utils.jewel`, Pythia8 helpers live under
 `heppyyier_utils.cache` provides generator-neutral helpers for local analysis
 caches: JSON-safe config normalization, deterministic config hashes, compact
 filename tokens, pickle payload read/write, and JSON sidecars.
-
-```python
-from heppyyier_utils.cache import ArtifactCache
-
-cache = ArtifactCache("outputs/cache", schema_version=1, base_dir=".")
-config = {"generator": "pythia8", "n_events": 10000, "jet_R": 0.4}
-path = cache.path("splitting_records", "pythia_demo", config)
-
-payload = {"config": config, "records": records}
-cache.write_pickle(path, payload, sidecar_exclude={"records"})
-loaded = cache.read_pickle(path)
-```
-
-Pickle payloads are meant for local reuse, not long-term interchange. If a
-payload contains project-specific Python objects, the same classes must be
-importable with compatible layouts when the cache is read. For portable or
-archival products, write stable formats such as parquet/Arrow plus JSON
-metadata and use this module only for the naming/metadata conventions.
+See [cache/README.md](cache/README.md) for usage patterns, invalidation
+guidelines, sidecar conventions, and pickle portability caveats.
 
 ## Pythia8
 
@@ -157,8 +141,8 @@ The utilities are split into four commands:
   parameter files. It does not run JEWEL.
 - `jewel_run`: run JEWEL inside directories previously created by
   `jewel_prepare`.
-- `jewel_convert`: convert one HepMC file to a CAB-compatible ROOT file using
-  `pyhepmc` and `uproot`.
+- `jewel_convert`: convert one HepMC file to a ROOT track TTree using `pyhepmc`
+  and `uproot`.
 - `jewel_pipeline`: do `prepare` and `run` in one command, with optional
   conversion.
 
@@ -207,7 +191,7 @@ Run JEWEL from the generated manifests:
 jewel_run outputs/jewel_events/pt100
 ```
 
-Convert one HepMC file to the ROOT tree format expected by CAB analysis:
+Convert one HepMC file to a ROOT TTree of final-particle track arrays:
 
 ```bash
 jewel_convert events.hepmc events.root
@@ -233,8 +217,10 @@ jewel_prepare --tag pbpb_001 --samples medium --job-id 1
 jewel_prepare --tag pp_001 --samples vacuum --job-id 1
 ```
 
-Conversion reads HepMC with `pyhepmc` and writes CAB-compatible ROOT TTrees with
-`uproot`. It does not use PyROOT or native ROOT libraries.
+Conversion reads HepMC with `pyhepmc` and writes ROOT TTrees with `uproot`.
+It does not use PyROOT or native ROOT libraries. The default tree name is
+`tracks`, with array branches for event id, momentum components, energy, and
+particle id.
 
 ## Run Directory Layout
 
@@ -320,7 +306,7 @@ Options:
 Usage: python -m heppyyier_utils.jewel.cli convert [OPTIONS] INPUT_HEPMC
                                                    OUTPUT_ROOT
 
-  Convert HepMC to CAB-compatible ROOT TTrees using uproot.
+  Convert HepMC to ROOT track TTrees using uproot.
 
 Options:
   --subtract-4mom / --no-subtract-4mom

@@ -225,7 +225,7 @@ def convert_hepmc_to_root(
     progress: bool = True,
     write_event_info: bool = True,
 ) -> dict:
-    """Convert HepMC events to CAB-compatible ROOT TTrees using uproot."""
+    """Convert HepMC events to ROOT track TTrees using uproot."""
 
     import pyhepmc
     from tqdm import tqdm

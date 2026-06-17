@@ -89,7 +89,7 @@ def convert(
     progress: bool,
     event_info: bool,
 ) -> None:
-    """Convert HepMC to CAB-compatible ROOT TTrees using uproot."""
+    """Convert HepMC to ROOT track TTrees using uproot."""
 
     result = convert_hepmc_to_root(
         input_hepmc,
